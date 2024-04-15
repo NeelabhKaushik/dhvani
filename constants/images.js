@@ -9,8 +9,7 @@ import empty from "../assets/images/empty.png";
 export default { profile, thumbnail, cards, path, logo, logoSmall, empty };
 
 export const sliderImage = [
-  require("../assets/images/thumbnail.png"),
-  require("../assets/images/thumbnail.png"),
-  require("../assets/images/thumbnail.png"),
-  require("../assets/images/thumbnail.png"),
+  require("../assets/images/change.png"),
+  require("../assets/images/braille.png"),
+  require("../assets/images/pdf.png"),
 ];

@@ -31,17 +31,17 @@ const Links = () => {
             className="flex justify-end p-4 mb-4"
           >
             <Image
-              source={require("../assets/images/profile.png")}
+              source={require("../assets/images/pdf-audio.png")}
               resizeMode="cover"
               style={{ width: wp(44), height: wp(52) }}
               className="rounded-[15px] absolute"
             />
-            <Text
+            {/* <Text
               style={{ fontSize: hp(2.3) }}
               className="font-semibold text-white text-center tracking-wide"
             >
               Listen
-            </Text>
+            </Text> */}
           </TouchableOpacity>
         </View>
         <View>
@@ -51,17 +51,17 @@ const Links = () => {
             className="flex justify-end p-4 mb-4"
           >
             <Image
-              source={require("../assets/images/profile.png")}
+              source={require("../assets/images/braille-audio.png")}
               resizeMode="cover"
               style={{ width: wp(44), height: wp(52) }}
               className="rounded-[15px] absolute"
             />
-            <Text
+            {/* <Text
               style={{ fontSize: hp(2.3) }}
               className="font-semibold text-white text-center tracking-wide"
             >
               Brille
-            </Text>
+            </Text> */}
           </TouchableOpacity>
         </View>
       </View>

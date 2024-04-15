@@ -2,9 +2,9 @@ import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { Image, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { images } from "../constants";
 import ImageSlider from "../components/ImageSlider";
 import Links from "../components/Links";
+import { images } from "../constants";
 
 const Home = () => {
   return (
@@ -43,7 +43,7 @@ const Home = () => {
       {/* Footer */}
       <View className="mb-4">
         <Text className="text-center text-secondary-100 text-sm">
-          © 2021 Dhvani. All rights reserved.
+          © 2024 Dhvani. All rights reserved.
         </Text>
       </View>
     </SafeAreaView>
