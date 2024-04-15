@@ -29,7 +29,7 @@ const RootLayout = () => {
             <Image
               source={images.path}
               className="w-[136px] h-[15px] absolute -bottom-2 -right-8"
-              resizeMethod="contain"
+              resizeMode="contain"
             />
           </View>
           <CustomButton
