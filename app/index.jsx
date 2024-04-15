@@ -6,10 +6,10 @@ import { Text, View } from "react-native";
 const RootLayout = () => {
   return (
     <View className="flex-1 items-center justify-center bg-white">
-      <Text className ="text-3xl">RootLayout</Text>
+      <Text className ="text-3xl font-pblack">RootLayout</Text>
       <StatusBar style="auto" />
-      <Link href="/pdf" style={{ color: "blue" }}>
-        Go to pdf
+      <Link href="/entry" style={{ color: "blue" }}>
+        Go to Entry
       </Link>
     </View>
   );
