@@ -11,7 +11,7 @@ const Links = () => {
     <View className="mx-4">
       <Text
         style={{ fontSize: hp(3) }}
-        className="font-semibold text-secondary-100"
+        className="font-semibold text-fuchsia-100"
       >
         Features
       </Text>

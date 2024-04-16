@@ -1,16 +1,17 @@
-import React, { useEffect } from "react";
-import { Image, ScrollView, View, Text } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { images } from "../constants";
-import CustomButton from "../components/CustomButton";
+import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { Redirect, router } from "expo-router";
-import Tts from "react-native-tts";
+import React, { useEffect } from "react";
+import { Image, ScrollView, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import CustomButton from "../components/CustomButton";
+import { images } from "../constants";
+import * as Speech from "expo-speech";
 
 const RootLayout = () => {
   useEffect(() => {
-    Tts.speak("Hello, world!");
+    Speech.speak("Welcome to dhwani ", { language: "hi" });
   }, []);
+
   return (
     <SafeAreaView className="bg-primary h-full">
       <ScrollView contentContainerStyle={{ height: "100%" }}>

@@ -1,12 +1,16 @@
 import { StatusBar } from "expo-status-bar";
-import React from "react";
+import React, { useEffect } from "react";
 import { Image, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ImageSlider from "../components/ImageSlider";
 import Links from "../components/Links";
 import { images } from "../constants";
+import * as Speech from "expo-speech";
 
 const Home = () => {
+  useEffect(() => {
+    Speech.speak("Home page ", { language: "hi" });
+  }, []);
   return (
     <SafeAreaView className="flex-1 bg-primary flex space-y-5" edges={["top"]}>
       <StatusBar backgroundColor="#161622" style="light" />
@@ -42,7 +46,7 @@ const Home = () => {
 
       {/* Footer */}
       <View className="mb-4">
-        <Text className="text-center text-secondary-100 text-sm">
+        <Text className="text-center text-fuchsia-100 text-sm">
           © 2024 Dhvani. All rights reserved.
         </Text>
       </View>

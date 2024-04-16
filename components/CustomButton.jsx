@@ -6,6 +6,7 @@ const CustomButton = ({
   containerStyles,
   textStyles,
   isLoading,
+  isDisabled
 }) => {
   return (
     <TouchableOpacity
@@ -19,7 +20,7 @@ const CustomButton = ({
       <Text className={`text-primary font-psemibold text-lg ${textStyles}`}>
         {title}
       </Text>
-
+{/* 
       {isLoading && (
         <ActivityIndicator
           animating={isLoading}
@@ -27,7 +28,7 @@ const CustomButton = ({
           size="small"
           className="ml-2"
         />
-      )}
+      )} */}
     </TouchableOpacity>
   );
 };
