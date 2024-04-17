@@ -1,21 +1,25 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useDebugValue, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Image, Text, View, TextInput, ScrollView } from "react-native";
 import CheckBox from "react-native-check-box";
 import { SafeAreaView } from "react-native-safe-area-context";
 import images from "../constants/images";
 import * as Speech from "expo-speech";
+
 const Braille = () => {
   useEffect(() => {
     Speech.speak("Braille page ", { language: "hi" });
   }, []);
+
+  const [toggleCheckBox, setToggleCheckBox] = useState(false);
+
   return (
     <SafeAreaView className="flex-1 bg-primary flex space-y-5" edges={["top"]}>
       <StatusBar backgroundColor="#161622" style="light" />
 
       <View className="flex-row justify-between items-center mx-5">
-        <View classNamespace-y-2>
-          <Text className="text-4xl text-white">Braille To </Text>
+        <View classNamespace="y-2">
+          <Text className="text-4xl text-white">Braille To</Text>
           <Text className="text-secondary text-5xl font-bold mt-1">Dhvani</Text>
           <Image
             source={images.path}
@@ -23,56 +27,69 @@ const Braille = () => {
             resizeMode="contain"
           />
         </View>
-        <View className="flex justify-cetner items-center space-y-2">
+        <View className="flex justify-center items-center space-y-2">
           <Image
             source={images.logoSmall}
-            className=" rounded-full w-20 h-20"
+            className="rounded-full w-20 h-20"
             resizeMode="contain"
           />
         </View>
       </View>
+
       <View className="mt-4">
         <Text className="text-semibold mx-5 text-white">
           Convert Any pdf to multiple languages
         </Text>
       </View>
-      <View
-        style={{ flex: 1, alignContent: "center", marginTop: 2 }}
-        className="mr-2 ml-2"
-      >
+
+      <View className="mr-2 ml-2">
         <ScrollView
-          style={{
-            width: "100%",
-            maxHeight: 200,
-            borderColor: "gray",
-            borderRadius: 5,
-            borderWidth: 1,
-          }}
+          className="w-full h-[200px] border-gray-500 border-2 rounded"
           showsHorizontalScrollIndicator={true}
           indicatorStyle="white"
         >
           <TextInput
-            style={{ width: "100%", height: "100%" }}
+            style={{ color: "white", backgroundColor: "#161622", fontSize: 20 }}
             multiline={true}
             editable={false}
-            value={
-              "hehehehehehhfeheaflaehfaflhaefhlealflhealfeef efahl alhhlaef ajlhafehjl eaflhj hjlaf ljhfe ljhafeh afejlhlaf ljhafe jlhaeflhjafeljh  e ekfnla fenklnf nae nlrknlaer klnaknle aknankl nka nkrklna knlklnr ealnreln klrek lnaerlkn knlrae lnka"
-            }
-            className="text-white text-2xl "
+            value={"Text comes here"}
+            className="text-white text-2xl w-full h-full "
           />
         </ScrollView>
       </View>
-      <View style={{ flexDirection: "row", alignContent: "center", justifyContent: "center" }} className=" gap-10 p-10">
-        <View style={{ flexDirection: "column" }}>
-          <CheckBox style={{flex: 1, padding: 10}} />
-          <CheckBox style={{flex: 1, padding: 10}} />
-          <CheckBox style={{flex: 1, padding: 10}} />
-        </View>
-        <View style={{ flexDirection: "column" }}>
 
-          <CheckBox style={{flex: 1, padding: 10}} className="rounded-lg" />
-          <CheckBox style={{flex: 1, padding: 10}} className="rounded-lg" />
-          <CheckBox style={{flex: 1, padding: 10}} className="rounded-lg" />
+      <View className="flex-row justify-center items-center space-x-10 p-5">
+        <View className="flex-col">
+          {[...Array(3)].map((_, index) => (
+            <CheckBox
+              key={index}
+              className="p-10"
+              checkBoxColor="#BF40BF"
+              boxType='circle'
+              onCheckColor="white"
+              hideBox={true}
+              lineWidth={0}
+              onClick={() => setToggleCheckBox(!toggleCheckBox)}
+              isChecked={toggleCheckBox}
+              onAnimationType = "bounce"
+              onFillColor = "white"
+              disabled = {true}
+            />
+          ))}
+        </View>
+        <View className="flex-col">
+          {[...Array(3)].map((_, index) => (
+            <CheckBox
+              key={index}
+              className="p-10"
+              checkBoxColor="#BF40BF"
+              boxType="circle"
+              onCheckColor="#1E1E2D"
+              hideBox="true"
+              onClick={() => setToggleCheckBox(!toggleCheckBox)}
+              isChecked={toggleCheckBox}
+            />
+          ))}
         </View>
       </View>
     </SafeAreaView>

@@ -86,17 +86,9 @@ const Pdf = () => {
 
   async function extractText(pdf) {
     Speech.speak("Getting Audio", { language: "hi" });
-    setTextWords([
-      "The",
-      "quick",
-      "brown",
-      "fox",
-      "jumps",
-      "over",
-      "the",
-      "lazy",
-      "dog",
-    ]);
+    const line = "The quick brown fox jumps over the lazy dog.";
+    const wordsArray = line.split(" ");
+    setTextWords(wordsArray);
     Speech.speak("Audio Extracted", { language: "hi" });
   }
   const Cancel = () => {
@@ -266,7 +258,7 @@ const Pdf = () => {
                 setIsFocus(false);
               }}
               renderRightIcon={() => (
-                <Image source={icons.search} className="h-[30px] w-[30px]" /> // You may need to adjust the size of the search icon
+                <Image source={icons.search} className="h-[30px] w-[30px]" />
               )}
             />
           </View>
