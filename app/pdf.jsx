@@ -1,7 +1,14 @@
 import * as DocumentPicker from "expo-document-picker";
 import * as Speech from "expo-speech";
 import { StatusBar } from "expo-status-bar";
-import React, { useEffect, useState } from "react";
+import React, {
+  useEffect,
+  useState,
+  memo,
+  useMemo,
+  useContext,
+  useRef,
+} from "react";
 import {
   Image,
   ScrollView,
@@ -9,11 +16,15 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Alert,
+  Pressable,
 } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CustomButton from "../components/CustomButton";
 import { icons, images } from "../constants";
+import { TextRefContext } from "./TextRefProvider";
+import RollingText from "react-native-rolling-text";
 
 const Pdf = () => {
   useEffect(() => {
@@ -25,6 +36,16 @@ const Pdf = () => {
   const [audioButtonContent, setAudioButtonContent] = useState("Geting Audio");
   const [playing, setPlaying] = useState(false);
   const [textWords, setTextWords] = useState([]);
+  const pause = useRef(false);
+  const scrollRef = useRef(null);
+  const WORDS = useRef([]);
+  const LIMIT = 30;
+  const [limit, setLimit] = useState(LIMIT);
+  const textIndex = useRef(0);
+  const textRefArray = useContext(TextRefContext);
+  let isUp = false;
+
+  const index = useRef(0);
 
   const openPicker = async () => {
     try {
@@ -63,34 +84,101 @@ const Pdf = () => {
     console.log("Language:", value);
   };
 
-  // async function extractText(pdf) {
-  //   const uri = pdf.assets[0].uri;
-  //   var RNFS = require("react-native-fs");
-  //   const pdfs = require("pdf-parse");
+  async function extractText(pdf) {
+    Speech.speak("Getting Audio", { language: "hi" });
+    setTextWords([
+      "The",
+      "quick",
+      "brown",
+      "fox",
+      "jumps",
+      "over",
+      "the",
+      "lazy",
+      "dog",
+    ]);
+    Speech.speak("Audio Extracted", { language: "hi" });
+  }
+  const Cancel = () => {
+    Speech.stop();
+    setPlaying(false);
+    setPdf(undefined);
+    setTextWords([]);
+  };
 
-  //   let dataBuffer = RNFS.readFileSync(uri);
+  const onPlayandPause = () => {
+    if (playing) {
+      pause.current = true;
+      setPlaying(false);
+    } else setPlaying(true);
+  };
 
-  //   pdfs(dataBuffer).then(function (data) {
-  //     // number of pages
-  //     console.log(data.numpages);
-  //     // number of rendered pages
-  //     console.log(data.numrender);
-  //     // PDF info
-  //     console.log(data.info);
-  //     // PDF metadata
-  //     console.log(data.metadata);
-  //     // PDF.js version
-  //     // check https://mozilla.github.io/pdf.js/getting_started/
-  //     console.log(data.version);
-  //     // PDF text
-  //     console.log(data.text);
-  //   });
-  // }
+  const handleScroll = () => {
+    isUp = !isUp;
+    if (isUp) scrollRef.current?.scrollTo({ x: 0, y: 0, animated: true });
+    else scrollRef.current?.scrollToEnd();
+  };
+
+  useEffect(() => {
+    return () => {
+      Speech.stop();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (WORDS.current[index.current] === undefined) return;
+
+    if (!playing) {
+      Speech.stop();
+      textIndex.current = Math.max(textIndex.current - 2, 0);
+    }
+
+    if (playing) {
+      const text = pause.current
+        ? textWords.slice(textIndex.current, limit).join(" ")
+        : WORDS.current[index.current];
+      Speech.speak(text, {
+        onStart: () => {
+          pause.current = false;
+          if (!isUp) scrollRef.current?.({ animated: true });
+        },
+
+        onDone: () => {
+          index.current++;
+
+          if (index.current >= WORDS.current.length) {
+            index.current = 0;
+            textIndex.current = 0;
+            setPlaying(false);
+            return Alert.alert("Congrats you completed this PDF", undefined, [
+              { text: "Great Thanks :)" },
+            ]);
+          } else setLimit((p) => p + LIMIT);
+        },
+        onBoundary: () => {
+          if (textIndex.current < textRefArray.length) {
+            textRefArray[textIndex.current++].current?.setNativeProps({
+              style: { opacity: 1 },
+            });
+          }
+        },
+      });
+    }
+  }, [playing, limit]);
+
+  useEffect(() => {
+    if (textWords.length === 0) return;
+    const N = textWords.length;
+    for (let i = 0; i < N; i += 30)
+      WORDS.current.push(textWords.slice(i, i + LIMIT).join(" "));
+
+    WORDS.current = WORDS.current.filter((word) => word !== "");
+  }, [textWords]);
 
   return (
     <SafeAreaView className="flex-1 bg-primary flex space-y-5" edges={["top"]}>
-      <View className="m-2">
-        <ScrollView>
+      <ScrollView>
+        <View className="m-2">
           <StatusBar backgroundColor="#161622" style="light" />
 
           <View className="flex-row justify-between items-center mx-5">
@@ -151,7 +239,7 @@ const Pdf = () => {
               itemTextStyle={{ color: "white" }}
               activeColor={{ backgroundColor: "bg-black", color: "white" }}
               containerStyle={{
-                backgroundColor: "bg-black-100",
+                backgroundColor: "#161622",
                 borderRadius: 10,
                 borderColor: "gray",
                 borderWidth: 0.5,
@@ -188,8 +276,60 @@ const Pdf = () => {
             containerStyles={"w-full mt-7"}
             isLoading={pdf ? false : audioButtonContent === "Fetching..."}
           />
-        </ScrollView>
-      </View>
+          {textWords.length > 0 ? (
+            <>
+              <View className="flex-row mt-5 justify-center w-[100%]">
+                <TouchableOpacity
+                  className="mx-3 bg-black-100 flex justify-center items-center  rounded-[5px]"
+                  onPress={Cancel}
+                >
+                  <Text className="text-secondary-100 text-[20px] font-bold px-5 py-2">
+                    Reset
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </>
+          ) : null}
+          {/* <View
+            className={`flex-1 w-full flex-row flex-wrap justify-start bg-black-100 mt-2 ${
+              textWords.length > 0 && "mb-20"
+            }`}
+          >
+            {textWords.slice(0, 30).map((word, index) => {
+              return <Words key={index} word={word} />;
+            })}
+          </View> */}
+          {textWords.length > 0 && (
+            <View className="z-0 mt-20 mx-auto w-11/12 h-12 flex flex-row items-center bg-secondary-100 rounded-lg shadow-xl border-2 border-purple-900 overflow-hidden">
+              <TouchableOpacity
+                className="flex justify-center items-center rounded-lg bg-black-100"
+                onPress={onPlayandPause}
+              >
+                <Text className="text-white text-lg font-bold px-6 py-2">
+                  {playing ? "Pause" : "Play"}
+                </Text>
+              </TouchableOpacity>
+              <Pressable
+                className="ml-5 overflow-hidden"
+                onPress={handleScroll}
+              >
+                <RollingText
+                  delay={400}
+                  style={{
+                    fontSize: 35,
+                    color: "#BF40BF",
+                    overflow: "hidden",
+                  }}
+                  durationMsPerWidth={20}
+                  startDelay={200}
+                >
+                  {!pdf?.canceled ? pdf.assets[0].name : "No Name"}
+                </RollingText>
+              </Pressable>
+            </View>
+          )}
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -210,42 +350,21 @@ const data = [
   { label: "Odia", value: "or" },
 ];
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "black-100",
-    padding: 16,
-  },
-  dropdown: {
-    height: 50,
-    borderColor: "gray",
-    borderWidth: 0.5,
-    borderRadius: 8,
-    paddingHorizontal: 8,
-  },
-  icon: {
-    marginRight: 5,
-  },
-  label: {
-    position: "absolute",
-    backgroundColor: "white",
-    left: 22,
-    top: 8,
-    zIndex: 999,
-    paddingHorizontal: 8,
-    fontSize: 14,
-  },
-  placeholderStyle: {
-    fontSize: 16,
-  },
-  selectedTextStyle: {
-    fontSize: 16,
-  },
-  iconStyle: {
-    width: 20,
-    height: 20,
-  },
-  inputSearchStyle: {
-    height: 40,
-    fontSize: 16,
-  },
+const Words = memo(({ word }) => {
+  const ref = useRef(null);
+  const textRefArray = useContext(TextRefContext);
+
+  useEffect(() => {
+    textRefArray.push(ref);
+  }, []);
+
+  return (
+    <Text
+      ref={ref}
+      className="text-[40px] text-secondary-100 font-bold pl-2 text-left flex"
+      style={{ opacity: 0.3 }}
+    >
+      {word}
+    </Text>
+  );
 });
